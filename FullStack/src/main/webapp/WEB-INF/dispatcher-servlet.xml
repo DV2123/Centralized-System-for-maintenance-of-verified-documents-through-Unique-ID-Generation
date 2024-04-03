@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx
+		https://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		">
+
+
+	<mvc:annotation-driven />
+	<!-- Inside dispatcher-servlet.xml -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<tx:annotation-driven proxy-target-class="true"/>
+ 
+	<context:component-scan base-package="org.mm.controller"></context:component-scan>
+	<context:component-scan base-package="org.mm"></context:component-scan>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	
+		<property name="prefix" value="/WEB-INF/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+
+	 <!-- 
+	  	<property name="prefix" value="/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+	-->
+	</bean>
+	
+	<!-- .... -->
+	
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dmds">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="Man@7720#7220"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/fullstack"></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" id="lsfb">
+		<property name="dataSource" ref="dmds"></property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+
+		<property name="annotatedClasses">
+			<list> 
+				<value>org.mm.model.LoginModel</value>
+				<value>org.mm.model.AadharModel</value>
+				<value>org.mm.model.PanModel</value>
+				<value>org.mm.model.UserDetailModel</value>
+				<value>org.mm.model.EducationModel</value>
+			</list>
+		</property>
+
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="lsfb"></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" id="transactionManager">
+		<property name="sessionFactory" ref="lsfb"></property>
+	</bean>
+	
+</beans> 
